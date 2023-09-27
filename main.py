@@ -1,16 +1,37 @@
-# This is a sample Python script.
+import json
+import requests
 
-# Press ⌃R to execute it or replace it with your code.
-# Press Double ⇧ to search everywhere for classes, files, tool windows, actions, and settings.
-
-
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press ⌘F8 to toggle the breakpoint.
+url = "https://sef.podkolzin.consulting/api/users/lastSeen"
+params = {'offset': 0}
 
 
-# Press the green button in the gutter to run the script.
-if __name__ == '__main__':
-    print_hi('PyCharm')
+class UserStatusChecker:
+    def __init__(self, url, initial_offset=0):
+        self.url = url
+        self.offset = initial_offset
 
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+    def fetch_user_data(self, offset):
+        response = requests.get(self.url, params={'offset': offset}, headers={'accept': 'application/json'})
+        if response.status_code != 200:
+            print(f"Failed to retrieve data. Status code: {response.status_code}")
+            return []
+        json_data = json.loads(response.text)
+        return json_data.get('data', [])
+
+    def print_user_info(self, user):
+        print("...............")
+        if user['isOnline']:
+            print(f"{user['nickname']} is online")
+        else:
+            print(f"{user['nickname']} has no last seen date")
+
+    def print_users(self):
+        while self.offset < 217:
+            user_list = self.fetch_user_data(self.offset)
+            for user in user_list:
+                self.print_user_info(user)
+            self.offset += 50
+
+
+checker = UserStatusChecker(url)
+checker.print_users()
