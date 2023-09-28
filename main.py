@@ -90,6 +90,18 @@ class TestUserStatusChecker(unittest.TestCase):
         self.assertIsInstance(last_seen_datetime, datetime)
         self.assertIsInstance(current_datetime, datetime)
 
+    def test_print_user_info_online(self):
+        user = {"nickname": "user1", "isOnline": True, "lastSeenDate": "2023-09-27T10:00:00Z"}
+        with patch('builtins.print') as mock_print:
+            self.checker.print_user_info(user)
+        mock_print.assert_called_with("user1 is online")
+
+    def test_print_user_info_no_last_seen(self):
+        user = {"nickname": "user2", "isOnline": False, "lastSeenDate": None}
+        with patch('builtins.print') as mock_print:
+            self.checker.print_user_info(user)
+        mock_print.assert_called_with("user2 has no last seen date")
+
 
 url = "https://sef.podkolzin.consulting/api/users/lastSeen"
 checker = UserStatusChecker(url)
