@@ -76,6 +76,14 @@ class TestUserStatusChecker(unittest.TestCase):
         self.assertEqual(len(user_data), 1)
         self.assertEqual(user_data[0]['nickname'], "user1")
 
+    def test_fetch_user_data_failure(self):
+        # return a failed response
+        mock_response = MagicMock()
+        mock_response.status_code = 404
+        with patch('requests.get', return_value=mock_response):
+            user_data = self.checker.fetch_user_data(0)
+        self.assertEqual(len(user_data), 0)
+
 
 url = "https://sef.podkolzin.consulting/api/users/lastSeen"
 checker = UserStatusChecker(url)
