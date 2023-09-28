@@ -84,6 +84,12 @@ class TestUserStatusChecker(unittest.TestCase):
             user_data = self.checker.fetch_user_data(0)
         self.assertEqual(len(user_data), 0)
 
+    def test_calculate_time_difference(self):
+        last_seen_str = "2023-09-27T10:00:00Z"
+        last_seen_datetime, current_datetime = self.checker.calculate_time_difference(last_seen_str)
+        self.assertIsInstance(last_seen_datetime, datetime)
+        self.assertIsInstance(current_datetime, datetime)
+
 
 url = "https://sef.podkolzin.consulting/api/users/lastSeen"
 checker = UserStatusChecker(url)
