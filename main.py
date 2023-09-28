@@ -2,6 +2,8 @@ import json
 import requests
 from datetime import datetime, timezone
 from dateutil.parser import parse
+import unittest
+from unittest.mock import MagicMock, patch
 
 
 class UserStatusChecker:
@@ -58,6 +60,26 @@ class UserStatusChecker:
             self.offset += 50
 
 
+class TestUserStatusChecker(unittest.TestCase):
+    def setUp(self):
+        # Create a UserStatusChecker instance with a mock API URL
+        self.api_url = "https://mock.api.com"
+        self.checker = UserStatusChecker(self.api_url)
+
+    def test_fetch_user_data_success(self):
+        # return a successful response
+        mock_response = MagicMock()
+        mock_response.status_code = 200
+        mock_response.text = '{"data": [{"nickname": "user1"}]}'
+        with patch('requests.get', return_value=mock_response):
+            user_data = self.checker.fetch_user_data(0)
+        self.assertEqual(len(user_data), 1)
+        self.assertEqual(user_data[0]['nickname'], "user1")
+
+
 url = "https://sef.podkolzin.consulting/api/users/lastSeen"
 checker = UserStatusChecker(url)
 checker.print_users()
+
+if __name__ == '__main__':
+    unittest.main()
