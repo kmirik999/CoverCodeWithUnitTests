@@ -51,8 +51,10 @@ class UserStatusChecker:
                 print(f"{user['nickname']} seen long time ago")
 
     def print_users(self):
-        while self.offset < 217:
+        while True:
             user_list = self.fetch_user_data(self.offset)
+            if not user_list:
+                break
             for user in user_list:
                 self.print_user_info(user)
             self.offset += 50
