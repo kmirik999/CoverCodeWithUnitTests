@@ -2,12 +2,14 @@ import json
 import requests
 from datetime import datetime, timezone
 from dateutil.parser import parse
+from Localization import translations
 
 
 class UserStatusChecker:
     def __init__(self, url, initial_offset=0):
         self.url = url
         self.offset = initial_offset
+        self.language = 'en'
 
     def fetch_user_data(self, offset):
         response = requests.get(self.url, params={'offset': offset}, headers={'accept': 'application/json'})
@@ -27,28 +29,38 @@ class UserStatusChecker:
         last_seen_datetime, current_datetime = self.calculate_time_difference(last_seen_str)
 
         print("...............")
+        translation = translations.get(self.language, translations['en'])
+        seconds = None
         if user['isOnline']:
-            print(f"{user['nickname']} is online")
+            print(f"{user['nickname']} {translation['online']}")
         elif last_seen_datetime is None:
-            print(f"{user['nickname']} has no last seen date")
+            seconds = None  # Initialize seconds as None
+            print(f"{user['nickname']} {translation['was_online']} {translation['just_now']}")
         else:
             seconds = (current_datetime - last_seen_datetime).total_seconds()
-            if 0 <= seconds <= 30:
-                print(f"{user['nickname']} seen just now")
-            elif 31 <= seconds <= 60:
-                print(f"{user['nickname']} seen less than a minute ago")
-            elif 61 <= seconds <= 3540:
-                print(f"{user['nickname']} seen a couple of minutes ago")
-            elif 3541 <= seconds <= 7140:
-                print(f"{user['nickname']} seen an hour ago")
-            elif last_seen_datetime.day == current_datetime.day and seconds > 7141:
-                print(f"{user['nickname']} seen today")
-            elif last_seen_datetime.day == current_datetime.day - 1 and seconds > 7141:
-                print(f"{user['nickname']} seen yesterday")
-            elif 1 < current_datetime.day - last_seen_datetime.day <= 7 and seconds > 7141:
-                print(f"{user['nickname']} seen this week")
-            else:
-                print(f"{user['nickname']} seen long time ago")
+            if seconds is not None:
+                if 0 <= seconds <= 30:
+                    print(f"{user['nickname']} {translation['just_now']}")
+                elif 31 <= seconds <= 60:
+                    print(f"{user['nickname']} {translation['less_than_a_minute_ago']}")
+                elif 61 <= seconds <= 3540:
+                    print(f"{user['nickname']} {translation['a_couple_of_minutes_ago']}")
+                elif 3541 <= seconds <= 7140:
+                    print(f"{user['nickname']} {translation['an_hour_ago']}")
+                elif last_seen_datetime.day == current_datetime.day and seconds > 7141:
+                    print(f"{user['nickname']} {translation['today']}")
+                elif last_seen_datetime.day == current_datetime.day - 1 and seconds > 7141:
+                    print(f"{user['nickname']} {translation['yesterday']}")
+                elif 1 < current_datetime.day - last_seen_datetime.day <= 7 and seconds > 7141:
+                    print(f"{user['nickname']} {translation['this_week']}")
+                else:
+                    print(f"{user['nickname']} {translation['a_long_time_ago']}")
+
+    # Handle cases where seconds is None (online or no last seen date)
+        if seconds is None:
+            return
+
+
 
     def print_users(self):
         while True:
@@ -59,8 +71,12 @@ class UserStatusChecker:
                 self.print_user_info(user)
             self.offset += 50
 
+    def set_language(self, language):
+        self.language = language
+
 
 if __name__ == '__main__':
     url = "https://sef.podkolzin.consulting/api/users/lastSeen"
     checker = UserStatusChecker(url)
+    checker.set_language('ua')
     checker.print_users()
