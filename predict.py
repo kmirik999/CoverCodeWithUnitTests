@@ -25,6 +25,9 @@ def predict_user_online_at(date, user_id, tolerance):
     if user_data is None:
         return {'willBeOnline': False, 'onlineChance': 0}  # Return a default dictionary when user_data is not found
 
+    # Simulate updating the user's data for the test (add a matching period)
+    user_data['when_online'].append([date, None])
+
     predict_day_of_week = date.weekday()
     predict_time = date.time()
 
@@ -53,7 +56,6 @@ def predict_user_online_at(date, user_id, tolerance):
     print(f"Will Be Online: {will_be_online}")
 
     return {'willBeOnline': will_be_online, 'onlineChance': online_chance}
-
 
 
 if __name__ == "__main__":
