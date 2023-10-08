@@ -129,7 +129,7 @@ def check_user_presence_at(date_to_check, user_id):
                     }
             return {'wasUserOnline': False, 'nearestOnlineTime': None}
 
-    return None  # User not found in data
+    return {'wasUserOnline': False, 'nearestOnlineTime': None}
 
 
 if __name__ == "__main__":

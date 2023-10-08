@@ -23,7 +23,7 @@ def predict_user_online_at(date, user_id, tolerance):
     user_data = next((user for user in full_data if user['userId'] == user_id), None)
 
     if user_data is None:
-        return None
+        return {'willBeOnline': False, 'onlineChance': 0}  # Return a default dictionary when user_data is not found
 
     predict_day_of_week = date.weekday()
     predict_time = date.time()
@@ -46,7 +46,14 @@ def predict_user_online_at(date, user_id, tolerance):
 
     will_be_online = online_chance >= tolerance
 
+    print(f"User ID: {user_id}, Date: {date}, Tolerance: {tolerance}")
+    print(f"Matching Periods: {matching_periods}")
+    print(f"Total Periods: {total_periods}")
+    print(f"Online Chance: {online_chance}")
+    print(f"Will Be Online: {will_be_online}")
+
     return {'willBeOnline': will_be_online, 'onlineChance': online_chance}
+
 
 
 if __name__ == "__main__":
