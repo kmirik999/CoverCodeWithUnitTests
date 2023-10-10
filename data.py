@@ -147,15 +147,44 @@ def calculate_total_online_time(user_id):
     return total_online_time.total_seconds()
 
 
+def calculate_average_times(user_id):
+    full_data = load_full_data()
+
+    user_online_periods = []
+    for user in full_data:
+        if user['userId'] == user_id:
+            user_online_periods = user['when_online']
+            break
+
+    if not user_online_periods:
+        return {'averageDailyTime': 0, 'averageWeeklyTime': 0}
+
+    total_weekly_time = timedelta()
+
+    for start, end in user_online_periods:
+        if not end:
+            end = datetime.now()
+
+        period_duration = end - start
+        total_weekly_time += period_duration
+
+    total_weekly_seconds = total_weekly_time.total_seconds()
+
+    average_daily_time = total_weekly_seconds / 7
+
+    return {'averageDailyTime': average_daily_time, 'averageWeeklyTime': total_weekly_seconds}
+
+
 if __name__ == "__main__":
     while True:
         print("Select an option:")
         print("1. Count users online at a specific date and time.")
         print("2. Check user presence at a specific date and time.")
         print("3. Calculate total online time for a user.")
-        print("4. Quit")
+        print("4. Calculate average daily and weekly time for a user.")
+        print("5. Quit")
 
-        choice = input("Enter your choice (1/2/3/4): ")
+        choice = input("Enter your choice (1/2/3/4/5): ")
 
         if choice == '1':
             date_str = input("Enter a date and time (YYYY-MM-DDTHH:MM:SS.abcdefZ): ")
@@ -184,6 +213,11 @@ if __name__ == "__main__":
             total_online_time = calculate_total_online_time(user_id_to_calculate)
             print(f"Total online time for user {user_id_to_calculate}: {total_online_time} seconds")
         elif choice == '4':
+            user_id_to_calculate = input("Enter a user ID to calculate average times: ")
+            average_times = calculate_average_times(user_id_to_calculate)
+            print(f"Average Daily Time (seconds): {average_times['averageDailyTime']}")
+            print(f"Average Weekly Time (seconds): {average_times['averageWeeklyTime']}")
+        elif choice == '5':
             break
         else:
-            print("Invalid choice. Please enter 1, 2, 3, or 4.")
+            print("Invalid choice. Please enter 1, 2, 3, 4 or 5.")
