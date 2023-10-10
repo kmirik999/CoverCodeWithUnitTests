@@ -2,7 +2,7 @@ import requests
 import json
 import csv
 import re
-from datetime import datetime
+from datetime import datetime, timedelta
 
 API_URL = "https://sef.podkolzin.consulting/api/users"
 
@@ -132,14 +132,30 @@ def check_user_presence_at(date_to_check, user_id):
     return {'wasUserOnline': False, 'nearestOnlineTime': None}
 
 
+def calculate_total_online_time(user_id):
+    full_data = load_full_data()
+    total_online_time = timedelta(seconds=0)
+
+    for user in full_data:
+        if user['userId'] == user_id:
+            for start, end in user['when_online']:
+                if end:
+                    total_online_time += end - start
+                else:
+                    total_online_time += datetime.now() - start
+
+    return total_online_time.total_seconds()
+
+
 if __name__ == "__main__":
     while True:
         print("Select an option:")
         print("1. Count users online at a specific date and time.")
         print("2. Check user presence at a specific date and time.")
-        print("3. Quit")
+        print("3. Calculate total online time for a user.")
+        print("4. Quit")
 
-        choice = input("Enter your choice (1/2/3): ")
+        choice = input("Enter your choice (1/2/3/4): ")
 
         if choice == '1':
             date_str = input("Enter a date and time (YYYY-MM-DDTHH:MM:SS.abcdefZ): ")
@@ -164,6 +180,10 @@ if __name__ == "__main__":
             else:
                 print("Invalid date and time format. Please use 'YYYY-MM-DDTHH:MM:SS.abcdefZ'.")
         elif choice == '3':
+            user_id_to_calculate = input("Enter a user ID to calculate total online time: ")
+            total_online_time = calculate_total_online_time(user_id_to_calculate)
+            print(f"Total online time for user {user_id_to_calculate}: {total_online_time} seconds")
+        elif choice == '4':
             break
         else:
-            print("Invalid choice. Please enter 1, 2, or 3.")
+            print("Invalid choice. Please enter 1, 2, 3, or 4.")
