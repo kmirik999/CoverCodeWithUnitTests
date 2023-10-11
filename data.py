@@ -149,13 +149,16 @@ def calculate_total_online_time(user_id):
                 else:
                     total_online_time += datetime.now() - start
 
+    print(f"DEBUG: User ID: {user_id}")
+    print(f"DEBUG: total_online_time: {total_online_time}")
+
     return total_online_time.total_seconds()
 
 
 def calculate_average_times(user_id):
     full_data = load_full_data()
-
     user_online_periods = []
+
     for user in full_data:
         if user['userId'] == user_id:
             user_online_periods = user['when_online']
@@ -176,6 +179,11 @@ def calculate_average_times(user_id):
     total_weekly_seconds = total_weekly_time.total_seconds()
 
     average_daily_time = total_weekly_seconds / 7
+
+    print(f"DEBUG: User ID: {user_id}")
+    print(f"DEBUG: user_online_periods: {user_online_periods}")
+    print(f"DEBUG: total_daily_seconds: {average_daily_time}")
+    print(f"DEBUG: total_weekly_seconds: {total_weekly_seconds}")
 
     return {'averageDailyTime': average_daily_time, 'averageWeeklyTime': total_weekly_seconds}
 
