@@ -67,7 +67,10 @@ def retrieve_and_update_data(prior_state):
         writer = csv.writer(csvfile)
         writer.writerow(fieldnames)
         for user in full_data:
-            when_online_json = json.dumps(user['when_online'])
+            when_online_json = json.dumps(
+                [[start.isoformat(), end.isoformat()] if end else [start.isoformat(), None]
+                 for start, end in user['when_online']]
+            )
             writer.writerow([user['userId'], user['isOnline'], user['lastSeenDate'], when_online_json])
 
 
@@ -78,8 +81,10 @@ def load_full_data():
             reader = csv.DictReader(csvfile)
             for row in reader:
                 when_online = json.loads(row['when_online'])
-                when_online_datetime = [(datetime.fromisoformat(start), datetime.fromisoformat(end) if end else None)
-                                        for start, end in when_online]
+                when_online_datetime = [
+                    (datetime.fromisoformat(start), datetime.fromisoformat(end) if end else None)
+                    for start, end in when_online
+                ]
                 full_data.append({
                     'userId': row['userId'],
                     'isOnline': row['isOnline'],
@@ -175,6 +180,30 @@ def calculate_average_times(user_id):
     return {'averageDailyTime': average_daily_time, 'averageWeeklyTime': total_weekly_seconds}
 
 
+def delete_user_data(user_id):
+    full_data = load_full_data()
+
+    updated_full_data = [user for user in full_data if user['userId'] != user_id]
+
+    with open('full_data.csv', 'w', newline='') as csvfile:
+        fieldnames = ['userId', 'isOnline', 'lastSeenDate', 'when_online']
+        writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+        writer.writeheader()
+        for user in updated_full_data:
+            when_online_json = json.dumps(
+                [[start.isoformat(), end.isoformat()] if end else [start.isoformat(), None]
+                 for start, end in user['when_online']]
+            )
+            writer.writerow({
+                'userId': user['userId'],
+                'isOnline': user['isOnline'],
+                'lastSeenDate': user['lastSeenDate'],
+                'when_online': when_online_json
+            })
+
+    print(f"User data for user ID {user_id} has been deleted from full_data.csv.")
+
+
 if __name__ == "__main__":
     while True:
         print("Select an option:")
@@ -182,9 +211,10 @@ if __name__ == "__main__":
         print("2. Check user presence at a specific date and time.")
         print("3. Calculate total online time for a user.")
         print("4. Calculate average daily and weekly time for a user.")
-        print("5. Quit")
+        print("5. Delete user data based on user ID.")
+        print("6. Quit")
 
-        choice = input("Enter your choice (1/2/3/4/5): ")
+        choice = input("Enter your choice (1/2/3/4/5/6): ")
 
         if choice == '1':
             date_str = input("Enter a date and time (YYYY-MM-DDTHH:MM:SS.abcdefZ): ")
@@ -218,6 +248,9 @@ if __name__ == "__main__":
             print(f"Average Daily Time (seconds): {average_times['averageDailyTime']}")
             print(f"Average Weekly Time (seconds): {average_times['averageWeeklyTime']}")
         elif choice == '5':
+            user_id_to_delete = input("Enter the user ID to delete: ")
+            delete_user_data(user_id_to_delete)
+        elif choice == '6':
             break
         else:
-            print("Invalid choice. Please enter 1, 2, 3, 4 or 5.")
+            print("Invalid choice. Please enter 1, 2, 3, 4, 5, or 6.")
