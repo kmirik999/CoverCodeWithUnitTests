@@ -1,7 +1,7 @@
 import unittest
 from datetime import datetime
-from data import count_users_online_at, check_user_presence_at
-from predict import predict_users_online_at, predict_user_online_at
+from Data.data import count_users_online_at, check_user_presence_at
+from Data.predict import predict_users_online_at, predict_user_online_at
 
 
 sample_data = [
@@ -18,7 +18,6 @@ sample_data = [
         'when_online': [
             ["2023-10-08T01:55:38.071188", None],
             ["2023-10-08T01:55:50.230817", None],
-            # Add more online periods here
         ],
     },
 ]

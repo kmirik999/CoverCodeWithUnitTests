@@ -1,5 +1,5 @@
 from datetime import datetime
-from data import load_full_data
+from Data.data import load_full_data
 
 
 def predict_users_online_at(date):

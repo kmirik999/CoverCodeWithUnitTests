@@ -1,7 +1,7 @@
 import unittest
 from unittest.mock import MagicMock, patch
 from datetime import datetime, timezone, timedelta
-from user_status_checker import UserStatusChecker
+from UnitTests.user_status_checker import UserStatusChecker
 
 
 class TestUserStatusChecker(unittest.TestCase):
@@ -9,8 +9,6 @@ class TestUserStatusChecker(unittest.TestCase):
         # Create a UserStatusChecker instance with a mock API URL
         self.api_url = "https://mock.api.com"
         self.checker = UserStatusChecker(self.api_url)
-
-# test_<method_or_feature_to_be_tested>_should_<expected_behavior>
 
     def test_fetch_user_data_should_return_data_on_success(self):
         # return a successful response

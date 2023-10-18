@@ -2,7 +2,7 @@ import json
 import requests
 from datetime import datetime, timezone
 from dateutil.parser import parse
-from Localization import translations
+from Data.Localization import translations
 
 
 class UserStatusChecker:
@@ -56,11 +56,8 @@ class UserStatusChecker:
                 else:
                     print(f"{user['nickname']} {translation['a_long_time_ago']}")
 
-    # Handle cases where seconds is None (online or no last seen date)
         if seconds is None:
             return
-
-
 
     def print_users(self):
         while True:

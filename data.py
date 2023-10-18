@@ -191,25 +191,35 @@ def calculate_average_times(user_id):
 def delete_user_data(user_id):
     full_data = load_full_data()
 
-    updated_full_data = [user for user in full_data if user['userId'] != user_id]
+    # Find the user's data to delete
+    user_data_to_delete = None
+    for user in full_data:
+        if user['userId'] == user_id:
+            user_data_to_delete = user
+            break
 
-    with open('full_data.csv', 'w', newline='') as csvfile:
-        fieldnames = ['userId', 'isOnline', 'lastSeenDate', 'when_online']
-        writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
-        writer.writeheader()
-        for user in updated_full_data:
-            when_online_json = json.dumps(
-                [[start.isoformat(), end.isoformat()] if end else [start.isoformat(), None]
-                 for start, end in user['when_online']]
-            )
-            writer.writerow({
-                'userId': user['userId'],
-                'isOnline': user['isOnline'],
-                'lastSeenDate': user['lastSeenDate'],
-                'when_online': when_online_json
-            })
+    if user_data_to_delete:
+        full_data.remove(user_data_to_delete)  # Remove the user's data from the list
 
-    print(f"User data for user ID {user_id} has been deleted from full_data.csv.")
+        with open('full_data.csv', 'w', newline='') as csvfile:
+            fieldnames = ['userId', 'isOnline', 'lastSeenDate', 'when_online']
+            writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+            writer.writeheader()
+            for user in full_data:
+                when_online_json = json.dumps(
+                    [[start.isoformat(), end.isoformat()] if end else [start.isoformat(), None]
+                     for start, end in user['when_online']]
+                )
+                writer.writerow({
+                    'userId': user['userId'],
+                    'isOnline': user['isOnline'],
+                    'lastSeenDate': user['lastSeenDate'],
+                    'when_online': when_online_json
+                })
+
+        print(f"User data for user ID {user_id} has been deleted from full_data.csv.")
+    else:
+        print(f"User data for user ID {user_id} not found.")
 
 
 if __name__ == "__main__":

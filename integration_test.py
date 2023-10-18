@@ -1,7 +1,7 @@
 import unittest
 from datetime import datetime
-from data import check_user_presence_at, count_users_online_at
-from predict import predict_user_online_at, predict_users_online_at
+from Data.data import check_user_presence_at, count_users_online_at
+from Data.predict import predict_user_online_at, predict_users_online_at
 
 
 class IntegrationTests(unittest.TestCase):
@@ -20,7 +20,7 @@ class IntegrationTests(unittest.TestCase):
         result = count_users_online_at(date_to_test)
 
         self.assertIsInstance(result, int)
-        self.assertEqual(result, 0)  # There should be 1 user online at this date
+        self.assertEqual(result, 0)  # There should be 0 user online at this date
 
     def test_predict_user_online_at_integration(self):
         user_id_to_test = 'de5b8815-1689-7c78-44e1-33375e7e2931'

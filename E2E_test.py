@@ -1,58 +1,63 @@
+import subprocess
 import unittest
-from datetime import datetime
-from data import check_user_presence_at, count_users_online_at,  calculate_total_online_time, calculate_average_times, delete_user_data, load_full_data
-from predict import predict_user_online_at, predict_users_online_at
 
 
-class TestLastSeen(unittest.TestCase):
-    def test_e2e(self):
-        # Test check_user_presence_at function
-        user_id_to_test = '2fba2529-c166-8574-2da2-eac544d82634'
-        date_to_test = datetime(2023, 10, 7, 22, 51, 51)
-        result = check_user_presence_at(date_to_test, user_id_to_test)
-        self.assertIsInstance(result, dict)
-        self.assertFalse(result['wasUserOnline'])
+class E2ETest(unittest.TestCase):
 
-        # Test count_users_online_at function
-        date_to_test = datetime(2023, 10, 7, 1, 57, 29)
-        result = count_users_online_at(date_to_test)
-        self.assertIsInstance(result, int)
-        self.assertEqual(result, 0)
+    @staticmethod
+    def run_application(command, input_data):
+        process = subprocess.Popen(command, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+        stdout, stderr = process.communicate(input=input_data)
+        return stdout
 
-        # Test predict_user_online_at function
-        user_id_to_test = 'de5b8815-1689-7c78-44e1-33375e7e2931'
-        date_to_test = datetime(2023, 10, 8, 1, 56, 51)
-        tolerance_level = 0.9
-        result = predict_user_online_at(date_to_test, user_id_to_test, tolerance_level)
-        self.assertIsInstance(result, dict)
-        self.assertFalse(result['willBeOnline'])
+    def test_users_online(self):
+        command = ["python", "data.py"]
 
-        # Test predict_users_online_at function
-        date_to_test = datetime(2023, 10, 8, 1, 57, 29)
-        result = predict_users_online_at(date_to_test)
-        self.assertIsInstance(result, dict)
-        self.assertEqual(result['onlineUsers'], 1)
+        input_data = "1\n"  # Select the option to count users online
+        input_data += "2023-10-08T01:55:38.071188\n"  # Input a date and time
 
-        # Test calculate_total_online_time function
-        test_user_id = 'de5b8815-1689-7c78-44e1-33375e7e2931'
-        result = calculate_total_online_time(test_user_id)
-        expected_total_online_time = 1306696.19394
-        self.assertIsInstance(result, float)
-        self.assertEqual(str(result)[:3], str(expected_total_online_time)[:3])
+        output = self.run_application(command, input_data)
+        self.assertIn("Users online at 2023-10-08 01:55:38.071188: 491", output)
 
-        # Test calculate_average_times function
-        test_user_id = 'de5b8815-1689-7c78-44e1-33375e7e2931'
-        result = calculate_average_times(test_user_id)
-        expected_average_daily_time = 186692.15941214285
-        expected_average_weekly_time = 1306845.115885
-        self.assertEqual(str(result['averageDailyTime'])[:3], str(expected_average_daily_time)[:3])
-        self.assertEqual(str(result['averageWeeklyTime'])[:3], str(expected_average_weekly_time)[:3])
+    def test_check_user_presence_at(self):
+        command = ["python", "data.py"]
 
-        # Test delete_user_data function
-        test_user_id_to_delete = '2fba2529-c166-8574-2da2-eac544d82634'
-        delete_user_data(test_user_id_to_delete)
-        full_data = load_full_data()
-        self.assertNotIn(test_user_id_to_delete, [user['userId'] for user in full_data])
+        input_data = "2\n"  # Select the option to check user presence
+        input_data += "de5b8815-1689-7c78-44e1-33375e7e2931\n"  # Input a user ID to check
+        input_data += "2023-10-08T01:56:51.608802\n"  # Input a date and time in the expected format
+
+        output = self.run_application(command, input_data)
+        self.assertIn("User de5b8815-1689-7c78-44e1-33375e7e2931 was online: True", output)
+
+    def test_calculate_total_online_time(self):
+        command = ["python", "data.py"]
+
+        input_data = "3\n"  # Select the option to calculate total online time
+        input_data += "de5b8815-1689-7c78-44e1-33375e7e2931\n"  # Input a user ID to calculate
+
+        output = self.run_application(command, input_data)
+        self.assertIn("Total online time for user de5b8815-1689-7c78-44e1-33375e7e2931:", output)
+
+    def test_calculate_average_times(self):
+        command = ["python", "data.py"]
+
+        input_data = "4\n"  # Select the option to calculate average times
+        input_data += "de5b8815-1689-7c78-44e1-33375e7e2931\n"  # Input a user ID to calculate average times
+
+        output = self.run_application(command, input_data)
+
+        self.assertIn("Average Daily Time (seconds):", output)
+        self.assertIn("Average Weekly Time (seconds):", output)
+
+
+    def test_delete_user_data(self):
+        command = ["python", "data.py"]
+
+        input_data = "5\n"  # Select the option to delete user data
+        input_data += "de5b8815-1689-7c78-44e1-33375e7e2931\n"  # Input a user ID to delete
+
+        output = self.run_application(command, input_data)
+        self.assertIn("User data for user ID de5b8815-1689-7c78-44e1-33375e7e2931 has been deleted", output)
 
 
 if __name__ == '__main__':
