@@ -221,6 +221,7 @@ def delete_user_data(user_id):
     else:
         print(f"User data for user ID {user_id} not found.")
 
+
 def total_time_in_date_range(user_id, start_date, end_date):
     full_data = load_full_data()
     total_time = timedelta(seconds=0)
@@ -228,21 +229,22 @@ def total_time_in_date_range(user_id, start_date, end_date):
     for user in full_data:
         if user['userId'] == user_id:
             for start, end in user['when_online']:
-                if end:
-                    if start >= start_date and end <= end_date:
-                        total_time += end - start
-                    elif start < start_date and end <= end_date:
-                        total_time += end - start_date
-                    elif start >= start_date and end > end_date:
-                        total_time += end_date - start
-                    else:
-                        total_time += end_date - start_date
+                if start is None:
+                    start = datetime.now()
+                if end is None:
+                    end = datetime.now()
+                if start <= end_date and end >= start_date:
+                    # Calculate the intersection between the user's online time and the specified date range
+                    overlap_start = max(start, start_date)
+                    overlap_end = min(end, end_date)
+                    total_time += overlap_end - overlap_start
+
     return total_time.total_seconds()
 
 
 def minimal_daily_online_time(user_id):
     full_data = load_full_data()
-    minimal_daily_time = float('inf')  # Set an initial high value
+    minimal_daily_time = float('inf')
 
     for user in full_data:
         if user['userId'] == user_id:
@@ -269,10 +271,9 @@ def minimal_daily_online_time(user_id):
     return minimal_daily_time
 
 
-
 def maximum_daily_online_time(user_id):
     full_data = load_full_data()
-    maximum_daily_time = 0  # Set an initial low value
+    maximum_daily_time = 0
 
     for user in full_data:
         if user['userId'] == user_id:
@@ -292,12 +293,10 @@ def maximum_daily_online_time(user_id):
                 else:
                     daily_time += (datetime.now() - start).total_seconds()
 
-    # Check the last day
     if last_date is not None:
         maximum_daily_time = max(maximum_daily_time, daily_time)
 
     return maximum_daily_time
-
 
 
 if __name__ == "__main__":
