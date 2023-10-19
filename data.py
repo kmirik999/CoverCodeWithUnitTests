@@ -221,6 +221,84 @@ def delete_user_data(user_id):
     else:
         print(f"User data for user ID {user_id} not found.")
 
+def total_time_in_date_range(user_id, start_date, end_date):
+    full_data = load_full_data()
+    total_time = timedelta(seconds=0)
+
+    for user in full_data:
+        if user['userId'] == user_id:
+            for start, end in user['when_online']:
+                if end:
+                    if start >= start_date and end <= end_date:
+                        total_time += end - start
+                    elif start < start_date and end <= end_date:
+                        total_time += end - start_date
+                    elif start >= start_date and end > end_date:
+                        total_time += end_date - start
+                    else:
+                        total_time += end_date - start_date
+    return total_time.total_seconds()
+
+
+def minimal_daily_online_time(user_id):
+    full_data = load_full_data()
+    minimal_daily_time = float('inf')  # Set an initial high value
+
+    for user in full_data:
+        if user['userId'] == user_id:
+            daily_time = 0
+            last_date = None
+
+            for start, end in user['when_online']:
+                if start.date() != last_date:
+                    # Check if this is a new day
+                    if last_date is not None:
+                        minimal_daily_time = min(minimal_daily_time, daily_time)
+                    last_date = start.date()
+                    daily_time = 0
+
+                if end:
+                    daily_time += (end - start).total_seconds()
+                else:
+                    daily_time += (datetime.now() - start).total_seconds()
+
+            # Check the last day
+            if last_date is not None:
+                minimal_daily_time = min(minimal_daily_time, daily_time)
+
+    return minimal_daily_time
+
+
+
+def maximum_daily_online_time(user_id):
+    full_data = load_full_data()
+    maximum_daily_time = 0  # Set an initial low value
+
+    for user in full_data:
+        if user['userId'] == user_id:
+            daily_time = 0
+            last_date = None
+
+            for start, end in user['when_online']:
+                if start.date() != last_date:
+                    # Check if this is a new day
+                    if last_date is not None:
+                        maximum_daily_time = max(maximum_daily_time, daily_time)
+                    last_date = start.date()
+                    daily_time = 0
+
+                if end:
+                    daily_time += (end - start).total_seconds()
+                else:
+                    daily_time += (datetime.now() - start).total_seconds()
+
+    # Check the last day
+    if last_date is not None:
+        maximum_daily_time = max(maximum_daily_time, daily_time)
+
+    return maximum_daily_time
+
+
 
 if __name__ == "__main__":
     while True:
@@ -230,9 +308,12 @@ if __name__ == "__main__":
         print("3. Calculate total online time for a user.")
         print("4. Calculate average daily and weekly time for a user.")
         print("5. Delete user data based on user ID.")
-        print("6. Quit")
+        print("6. Calculate total time a user was online in a date range.")
+        print("7. Calculate minimal daily online time for a user.")
+        print("8. Calculate maximum daily online time for a user.")
+        print("9. Quit")
 
-        choice = input("Enter your choice (1/2/3/4/5/6): ")
+        choice = input("Enter your choice (1/2/3/4/5/6/7/8/9): ")
 
         if choice == '1':
             date_str = input("Enter a date and time (YYYY-MM-DDTHH:MM:SS.abcdefZ): ")
@@ -269,6 +350,25 @@ if __name__ == "__main__":
             user_id_to_delete = input("Enter the user ID to delete: ")
             delete_user_data(user_id_to_delete)
         elif choice == '6':
+            user_id_to_calculate = input("Enter a user ID: ")
+            start_date_str = input("Enter the start date and time (YYYY-MM-DDTHH:MM:SS.abcdefZ): ")
+            end_date_str = input("Enter the end date and time (YYYY-MM-DDTHH:MM:SS.abcdefZ): ")
+            start_date = parse_iso8601_datetime(start_date_str)
+            end_date = parse_iso8601_datetime(end_date_str)
+            if start_date and end_date:
+                total_time = total_time_in_date_range(user_id_to_calculate, start_date, end_date)
+                print(f"Total time for user {user_id_to_calculate} in the date range: {total_time} seconds")
+            else:
+                print("Invalid date and time format. Please use 'YYYY-MM-DDTHH:MM:SS.abcdefZ'.")
+        elif choice == '7':
+            user_id_to_calculate = input("Enter a user ID: ")
+            min_daily_time = minimal_daily_online_time(user_id_to_calculate)
+            print(f"Minimal daily online time for user {user_id_to_calculate}: {min_daily_time} seconds")
+        elif choice == '8':
+            user_id_to_calculate = input("Enter a user ID: ")
+            max_daily_time = maximum_daily_online_time(user_id_to_calculate)
+            print(f"Maximum daily online time for user {user_id_to_calculate}: {max_daily_time} seconds")
+        elif choice == '9':
             break
         else:
-            print("Invalid choice. Please enter 1, 2, 3, 4, 5, or 6.")
+            print("Invalid choice. Please enter a valid option (1-9).")
