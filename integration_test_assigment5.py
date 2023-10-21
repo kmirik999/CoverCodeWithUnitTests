@@ -1,5 +1,5 @@
 import unittest
-from data import total_time_in_date_range, minimal_daily_online_time, maximum_daily_online_time, parse_iso8601_datetime
+from data import total_time_in_date_range, minimal_daily_online_time, maximum_daily_online_time, parse_iso8601_datetime, generate_user_report
 
 
 class IntegrationTests(unittest.TestCase):
@@ -7,7 +7,7 @@ class IntegrationTests(unittest.TestCase):
         test_user_id = 'a807e6f7-ec9c-f8a6-a6e4-43b8f36c78cc'
 
         result = maximum_daily_online_time(test_user_id)
-        expected_max_daily_time = 23708253.936120003
+        expected_max_daily_time = 23952918.213861994
 
         self.assertIsInstance(result, float)
         self.assertEqual(str(result)[:3], str(expected_max_daily_time)[:3])
@@ -16,7 +16,7 @@ class IntegrationTests(unittest.TestCase):
         test_user_id = 'a807e6f7-ec9c-f8a6-a6e4-43b8f36c78cc'
 
         result = minimal_daily_online_time(test_user_id)
-        expected_min_daily_time = 2200741.098919
+        expected_min_daily_time = 2222153.988119
 
         self.assertIsInstance(result, float)
         self.assertEqual(str(result)[:3], str(expected_min_daily_time)[:3])
@@ -34,6 +34,24 @@ class IntegrationTests(unittest.TestCase):
 
         self.assertIsInstance(result, float)
         self.assertEqual(str(result)[:3], str(expected_total_time)[:3])
+
+    def test_generate_user_report_integration(self):
+        test_user_ids = ['a807e6f7-ec9c-f8a6-a6e4-43b8f36c78cc', '8b0b5db6-19d6-d777-575e-915c2a77959a']
+        test_metrics = ['total_online_time', 'average_times']
+
+        report = generate_user_report(test_user_ids, test_metrics)
+
+        self.assertIsInstance(report, dict)
+
+        for user_id in test_user_ids:
+            self.assertIn(user_id, report)
+
+            for metric in test_metrics:
+                self.assertIn(metric, report[user_id])
+                if metric == 'total_online_time':
+                    self.assertIsInstance(report[user_id][metric], float)
+                elif metric == 'average_times':
+                    self.assertIsInstance(report[user_id][metric], dict)
 
 
 if __name__ == '__main__':

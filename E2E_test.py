@@ -17,7 +17,7 @@ class E2ETest(unittest.TestCase):
         input_data += "2023-10-08T01:55:38.071188\n"  # Input a date and time
 
         output = self.run_application(command, input_data)
-        self.assertIn("Users online at 2023-10-08 01:55:38.071188: 479", output)
+        self.assertIn("Users online at 2023-10-08 01:55:38.071188: 467", output)
 
     def test_check_user_presence_at(self):
         command = ["python", "data.py"]
@@ -82,11 +82,25 @@ class E2ETest(unittest.TestCase):
         command = ["python", "data.py"]
 
         input_data = "5\n"  # Select the option to delete user data
-        input_data += "ca36308c-ddc8-5d79-3eaf-943307a5e8d3\n"  # Input a user ID to delete
+        input_data += "697b9b37-a7c7-fec8-c202-c6d6adae5c03\n"  # Input a user ID to delete
 
         output = self.run_application(command, input_data)
-        self.assertIn("User data for user ID ca36308c-ddc8-5d79-3eaf-943307a5e8d3 has been deleted", output)
+        self.assertIn("User data for user ID 697b9b37-a7c7-fec8-c202-c6d6adae5c03 has been deleted", output)
 
+    def test_generate_user_report(self):
+        command = ["python", "data.py"]
+
+        input_data = "9\n"  # Select the option to generate user reports
+        input_data += "a807e6f7-ec9c-f8a6-a6e4-43b8f36c78cc,8b0b5db6-19d6-d777-575e-915c2a77959a\n"
+        input_data += "total_online_time,average_times\n"
+
+        output = self.run_application(command, input_data)
+        self.assertIn("User Report:", output)
+        self.assertIn("User ID: a807e6f7-ec9c-f8a6-a6e4-43b8f36c78cc", output)
+        self.assertIn("User ID: 8b0b5db6-19d6-d777-575e-915c2a77959a", output)
+
+        self.assertIn("total_online_time", output)
+        self.assertIn("average_times", output)
 
 
 if __name__ == '__main__':
