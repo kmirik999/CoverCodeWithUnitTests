@@ -2,7 +2,7 @@ import json
 import requests
 from datetime import datetime, timezone
 from dateutil.parser import parse
-from Data.Localization import translations
+from Localization import translations
 
 
 class UserStatusChecker:
@@ -77,3 +77,5 @@ if __name__ == '__main__':
     checker = UserStatusChecker(url)
     checker.set_language('ua')
     checker.print_users()
+
+

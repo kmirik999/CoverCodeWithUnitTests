@@ -1,7 +1,7 @@
 import unittest
 from datetime import datetime
-from Data.data import count_users_online_at, check_user_presence_at
-from Data.predict import predict_users_online_at, predict_user_online_at
+from data import count_users_online_at, check_user_presence_at
+from predict import predict_users_online_at, predict_user_online_at
 
 
 sample_data = [
@@ -62,3 +62,5 @@ class TestYourFunctions(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
+
+
