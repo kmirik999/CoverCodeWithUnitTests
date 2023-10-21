@@ -27,15 +27,15 @@ class TestYourFunctions(unittest.TestCase):
 
     def test_should_predict_users_online_at_given_date(self):
         # Test when there is no online user at the specified date
-        date_to_test = datetime(2023, 10, 8, 1, 55, 38)
+        date_to_test = datetime(2023, 10, 7, 22, 51, 11)
         result = predict_users_online_at(date_to_test)
         self.assertEqual(result['onlineUsers'], 0)
 
     def test_should_predict_user_online_at_given_date_and_id(self):
         # Test when a user is predicted to be online with high tolerance
-        user_id_to_test = '8b0b5db6-19d6-d777-575e-915c2a77959a'
-        date_to_test = datetime(2023, 10, 8, 1, 56, 51)
-        tolerance_level = 0.9  # High tolerance
+        user_id_to_test = '99f065e9-2796-0dc7-97c4-8ea28db20bf7'
+        date_to_test = datetime(2023, 10, 8, 1, 53, 22)
+        tolerance_level = 0.2
         result = predict_user_online_at(date_to_test, user_id_to_test, tolerance_level)
         self.assertTrue(result['willBeOnline'])
 

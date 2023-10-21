@@ -4,22 +4,22 @@ from data import calculate_total_online_time, calculate_average_times, delete_us
 
 class IntegrationTests(unittest.TestCase):
     def test_calculate_total_online_time_integration(self):
-        test_user_id = 'de5b8815-1689-7c78-44e1-33375e7e2931'
+        test_user_id = '8b0b5db6-19d6-d777-575e-915c2a77959a'
 
         result = calculate_total_online_time(test_user_id)
 
-        expected_total_online_time = 1271921.308544
+        expected_total_online_time = 11861678.76329
 
         self.assertIsInstance(result, float)
         self.assertEqual(str(result)[:3], str(expected_total_online_time)[:3])
 
     def test_calculate_average_times_integration(self):
-        test_user_id = 'de5b8815-1689-7c78-44e1-33375e7e2931'
+        test_user_id = '8b0b5db6-19d6-d777-575e-915c2a77959a'
 
         result = calculate_average_times(test_user_id)
 
-        expected_average_daily_time = 181703.04407771426
-        expected_average_weekly_time = 1271921.308544
+        expected_average_daily_time = 1694574.3352268573
+        expected_average_weekly_time = 11862020.346588
 
         self.assertEqual(str(result['averageDailyTime'])[:3], str(expected_average_daily_time)[:3])
         self.assertEqual(str(result['averageWeeklyTime'])[:3], str(expected_average_weekly_time)[:3])
