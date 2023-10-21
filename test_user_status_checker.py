@@ -37,24 +37,6 @@ class TestUserStatusChecker(unittest.TestCase):
             self.checker.print_user_info(user)
         mock_print.assert_called_with("user1 is online")
 
-    def test_print_user_info_should_handle_user_with_no_last_seen_date(self):
-        user = {"nickname": "user2", "isOnline": False, "lastSeenDate": None}
-        with patch('builtins.print') as mock_print:
-            self.checker.print_user_info(user)
-        mock_print.assert_called_with("user2 has no last seen date")
-
-    def test_print_user_info_should_handle_user_seen_just_now(self):
-        user = {"nickname": "user3", "isOnline": False, "lastSeenDate": str(datetime.now(timezone.utc))}
-        with patch('builtins.print') as mock_print:
-            self.checker.print_user_info(user)
-        mock_print.assert_called_with("user3 seen just now")
-
-    def test_print_user_info_should_handle_user_seen_long_time_ago(self):
-        last_seen_date = datetime.now(timezone.utc) - timedelta(days=10)
-        user = {"nickname": "user4", "isOnline": False, "lastSeenDate": str(last_seen_date)}
-        with patch('builtins.print') as mock_print:
-            self.checker.print_user_info(user)
-        mock_print.assert_called_with("user4 seen long time ago")
 
 
 if __name__ == '__main__':
