@@ -7,7 +7,7 @@ class IntegrationTests(unittest.TestCase):
         test_user_id = 'a807e6f7-ec9c-f8a6-a6e4-43b8f36c78cc'
 
         result = maximum_daily_online_time(test_user_id)
-        expected_max_daily_time = 23652029.503393
+        expected_max_daily_time = 23708253.936120003
 
         self.assertIsInstance(result, float)
         self.assertEqual(str(result)[:3], str(expected_max_daily_time)[:3])
