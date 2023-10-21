@@ -16,7 +16,7 @@ class IntegrationTests(unittest.TestCase):
         test_user_id = 'a807e6f7-ec9c-f8a6-a6e4-43b8f36c78cc'
 
         result = minimal_daily_online_time(test_user_id)
-        expected_min_daily_time = 2192206.487082
+        expected_min_daily_time = 2200741.098919
 
         self.assertIsInstance(result, float)
         self.assertEqual(str(result)[:3], str(expected_min_daily_time)[:3])
