@@ -1,17 +1,15 @@
 import unittest
 from unittest.mock import MagicMock, patch
 from datetime import datetime, timezone, timedelta
-from UnitTests.user_status_checker import UserStatusChecker
+from user_status_checker import UserStatusChecker
 
 
 class TestUserStatusChecker(unittest.TestCase):
     def setUp(self):
-        # Create a UserStatusChecker instance with a mock API URL
         self.api_url = "https://mock.api.com"
         self.checker = UserStatusChecker(self.api_url)
 
     def test_fetch_user_data_should_return_data_on_success(self):
-        # return a successful response
         mock_response = MagicMock()
         mock_response.status_code = 200
         mock_response.text = '{"data": [{"nickname": "user1"}]}'
@@ -21,7 +19,6 @@ class TestUserStatusChecker(unittest.TestCase):
         self.assertEqual(user_data[0]['nickname'], "user1")
 
     def test_fetch_user_data_should_return_empty_list_on_failure(self):
-        # return a failed response
         mock_response = MagicMock()
         mock_response.status_code = 404
         with patch('requests.get', return_value=mock_response):

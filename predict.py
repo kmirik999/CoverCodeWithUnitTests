@@ -1,5 +1,5 @@
 from datetime import datetime
-from Data.data import load_full_data
+from data import load_full_data
 
 
 def predict_users_online_at(date):
@@ -23,9 +23,8 @@ def predict_user_online_at(date, user_id, tolerance):
     user_data = next((user for user in full_data if user['userId'] == user_id), None)
 
     if user_data is None:
-        return {'willBeOnline': False, 'onlineChance': 0}  # Return a default dictionary when user_data is not found
+        return {'willBeOnline': False, 'onlineChance': 0}
 
-    # Simulate updating the user's data for the test (add a matching period)
     user_data['when_online'].append([date, None])
 
     predict_day_of_week = date.weekday()

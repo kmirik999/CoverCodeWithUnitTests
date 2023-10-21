@@ -92,7 +92,7 @@ def load_full_data():
                     'when_online': when_online_datetime
                 })
     except FileNotFoundError:
-        pass  # File does not exist, return an empty list
+        pass
 
     return full_data
 
@@ -191,7 +191,6 @@ def calculate_average_times(user_id):
 def delete_user_data(user_id):
     full_data = load_full_data()
 
-    # Find the user's data to delete
     user_data_to_delete = None
     for user in full_data:
         if user['userId'] == user_id:
@@ -199,7 +198,7 @@ def delete_user_data(user_id):
             break
 
     if user_data_to_delete:
-        full_data.remove(user_data_to_delete)  # Remove the user's data from the list
+        full_data.remove(user_data_to_delete)
 
         with open('full_data.csv', 'w', newline='') as csvfile:
             fieldnames = ['userId', 'isOnline', 'lastSeenDate', 'when_online']
@@ -234,7 +233,6 @@ def total_time_in_date_range(user_id, start_date, end_date):
                 if end is None:
                     end = datetime.now()
                 if start <= end_date and end >= start_date:
-                    # Calculate the intersection between the user's online time and the specified date range
                     overlap_start = max(start, start_date)
                     overlap_end = min(end, end_date)
                     total_time += overlap_end - overlap_start
@@ -253,7 +251,6 @@ def minimal_daily_online_time(user_id):
 
             for start, end in user['when_online']:
                 if start.date() != last_date:
-                    # Check if this is a new day
                     if last_date is not None:
                         minimal_daily_time = min(minimal_daily_time, daily_time)
                     last_date = start.date()
@@ -371,3 +368,4 @@ if __name__ == "__main__":
             break
         else:
             print("Invalid choice. Please enter a valid option (1-9).")
+
