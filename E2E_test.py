@@ -14,10 +14,10 @@ class E2ETest(unittest.TestCase):
         command = ["python", "data.py"]
 
         input_data = "1\n"  # Select the option to count users online
-        input_data += "2023-10-08T01:55:38.071188\n"  # Input a date and time
+        input_data += "2023-10-08T01:53:10.433851\n"  # Input a date and time
 
         output = self.run_application(command, input_data)
-        self.assertIn("Users online at 2023-10-08 01:55:38.071188: 467", output)
+        self.assertIn("Users online at 2023-10-08 01:53:10.433851: 10", output)
 
     def test_check_user_presence_at(self):
         command = ["python", "data.py"]
@@ -82,10 +82,10 @@ class E2ETest(unittest.TestCase):
         command = ["python", "data.py"]
 
         input_data = "5\n"  # Select the option to delete user data
-        input_data += "697b9b37-a7c7-fec8-c202-c6d6adae5c03\n"  # Input a user ID to delete
+        input_data += "0d58777f-4a30-8fcf-5e6f-504c2e0da05e\n"  # Input a user ID to delete
 
         output = self.run_application(command, input_data)
-        self.assertIn("User data for user ID 697b9b37-a7c7-fec8-c202-c6d6adae5c03 has been deleted", output)
+        self.assertIn("User data for user ID 0d58777f-4a30-8fcf-5e6f-504c2e0da05e has been deleted", output)
 
     def test_generate_user_report(self):
         command = ["python", "data.py"]
@@ -105,3 +105,4 @@ class E2ETest(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
+
