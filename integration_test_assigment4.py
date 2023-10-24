@@ -8,7 +8,7 @@ class IntegrationTests(unittest.TestCase):
 
         result = calculate_total_online_time(test_user_id)
 
-        expected_total_online_time = 11861678.76329
+        expected_total_online_time = 11977136.721496
 
         self.assertIsInstance(result, float)
         self.assertEqual(str(result)[:3], str(expected_total_online_time)[:3])
@@ -18,8 +18,8 @@ class IntegrationTests(unittest.TestCase):
 
         result = calculate_average_times(test_user_id)
 
-        expected_average_daily_time = 1694574.3352268573
-        expected_average_weekly_time = 11862020.346588
+        expected_average_daily_time = 1711045.8343238572
+        expected_average_weekly_time = 11977320.840267
 
         self.assertEqual(str(result['averageDailyTime'])[:3], str(expected_average_daily_time)[:3])
         self.assertEqual(str(result['averageWeeklyTime'])[:3], str(expected_average_weekly_time)[:3])

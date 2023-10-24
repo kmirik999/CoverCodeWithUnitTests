@@ -296,6 +296,31 @@ def maximum_daily_online_time(user_id):
     return maximum_daily_time
 
 
+def generate_user_report(user_ids, metrics):
+    report = {}
+
+    for user_id in user_ids:
+        report[user_id] = {}
+
+        for metric in metrics:
+            if metric == 'total_online_time':
+                total_time = calculate_total_online_time(user_id)
+                report[user_id]['total_online_time'] = total_time
+            elif metric == 'average_times':
+                average_times = calculate_average_times(user_id)
+                report[user_id]['average_times'] = average_times
+            elif metric == 'minimal_daily_time':
+                min_daily_time = minimal_daily_online_time(user_id)
+                report[user_id]['minimal_daily_time'] = min_daily_time
+            elif metric == 'maximum_daily_time':
+                max_daily_time = maximum_daily_online_time(user_id)
+                report[user_id]['maximum_daily_time'] = max_daily_time
+            else:
+                report[user_id][metric] = "Invalid Metric"
+
+    return report
+
+
 if __name__ == "__main__":
     while True:
         print("Select an option:")
@@ -307,9 +332,10 @@ if __name__ == "__main__":
         print("6. Calculate total time a user was online in a date range.")
         print("7. Calculate minimal daily online time for a user.")
         print("8. Calculate maximum daily online time for a user.")
-        print("9. Quit")
+        print("9. Report")
+        print("10. Quit")
 
-        choice = input("Enter your choice (1/2/3/4/5/6/7/8/9): ")
+        choice = input("Enter your choice (1/2/3/4/5/6/7/8/9/10): ")
 
         if choice == '1':
             date_str = input("Enter a date and time (YYYY-MM-DDTHH:MM:SS.abcdefZ): ")
@@ -365,7 +391,19 @@ if __name__ == "__main__":
             max_daily_time = maximum_daily_online_time(user_id_to_calculate)
             print(f"Maximum daily online time for user {user_id_to_calculate}: {max_daily_time} seconds")
         elif choice == '9':
+            user_ids_input = input("Enter a comma-separated list of user IDs: ")
+            user_ids = user_ids_input.split(',')
+            metrics_input = input("Enter a comma-separated list of metrics (e.g., total_online_time,average_times): ")
+            metrics = metrics_input.split(',')
+
+            user_report = generate_user_report(user_ids, metrics)
+            print("User Report:")
+            for user_id, data in user_report.items():
+                print(f"User ID: {user_id}")
+                for metric, value in data.items():
+                    print(f"{metric}: {value}")
+        elif choice == '10':
             break
         else:
-            print("Invalid choice. Please enter a valid option (1-9).")
+            print("Invalid choice. Please enter a valid option (1-10).")
 
