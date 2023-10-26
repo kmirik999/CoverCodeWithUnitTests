@@ -82,10 +82,10 @@ class E2ETest(unittest.TestCase):
         command = ["python", "data.py"]
 
         input_data = "5\n"  # Select the option to delete user data
-        input_data += "0d58777f-4a30-8fcf-5e6f-504c2e0da05e\n"  # Input a user ID to delete
+        input_data += "963d82d7-bbc1-6171-48dd-3d937541fc5d\n"  # Input a user ID to delete
 
         output = self.run_application(command, input_data)
-        self.assertIn("User data for user ID 0d58777f-4a30-8fcf-5e6f-504c2e0da05e has been deleted", output)
+        self.assertIn("User data for user ID 963d82d7-bbc1-6171-48dd-3d937541fc5d has been deleted", output)
 
     def test_generate_user_report(self):
         command = ["python", "data.py"]
